@@ -15,7 +15,7 @@ async function getXRPPrice(currency) {
     }
 }
 
-// Generate QR code
+// Generate main payment QR code
 async function generateQR() {
     const address = document.getElementById('xrp-address').value.trim();
     const amount = parseFloat(document.getElementById('amount').value);
@@ -59,4 +59,29 @@ async function generateQR() {
         width: 200,
         height: 200
     });
+}
+
+// Toggle and generate tip QR code
+function toggleTipQR() {
+    const tipQrDiv = document.getElementById('tip-qrcode');
+    const tipButton = document.getElementById('tip-button');
+    const devAddress = 'rQERimqpZebP1Knt3BCMZHDMJWZ7u6ZBuW'; // Replace with your XRP address
+    const tipAmount = '1'; // Fixed 1 XRP tip
+
+    if (tipQrDiv.style.display === 'none' || tipQrDiv.innerHTML === '') {
+        // Show and generate tip QR code
+        tipQrDiv.innerHTML = ''; // Clear previous QR
+        const qrText = `xrpl:${devAddress}?amount=${tipAmount}`;
+        new QRCode(tipQrDiv, {
+            text: qrText,
+            width: 200,
+            height: 200
+        });
+        tipQrDiv.style.display = 'flex';
+        tipButton.textContent = 'Hide Tip QR Code';
+    } else {
+        // Hide tip QR code
+        tipQrDiv.style.display = 'none';
+        tipButton.textContent = 'Tip the Dev (1 XRP)';
+    }
 }
