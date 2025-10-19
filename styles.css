@@ -72,7 +72,7 @@ button:disabled {
         visibility: hidden;
     }
     #print-template, #print-template * {
-        visibility: visible;
+        visibility: visible !important;
     }
     #print-template {
         position: absolute;
@@ -80,6 +80,7 @@ button:disabled {
         left: 0;
         width: 100%;
         text-align: center;
+        background: white;
     }
     #print-content {
         display: flex;
@@ -90,11 +91,14 @@ button:disabled {
     }
     #print-qrcode {
         margin: 20px auto;
+        width: 200px;
+        height: 200px;
     }
     #print-qrcode canvas, #print-qrcode img {
         width: 200px !important;
         height: 200px !important;
-        display: block;
+        display: block !important;
+        margin: 0 auto;
     }
     h2 {
         font-size: 24px;
