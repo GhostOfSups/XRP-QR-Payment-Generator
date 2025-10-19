@@ -39,6 +39,19 @@
         <div id="print-qrcode"></div>
     </div>
 </div>
+    <style>
+/* Hide by default on screen */
+#print-template {
+    display: none;
+}
+
+/* Show only when printing */
+@media print {
+    #print-template {
+        display: block;
+    }
+}
+</style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 </body>
