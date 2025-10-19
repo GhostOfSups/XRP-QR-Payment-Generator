@@ -9,6 +9,7 @@ https://GhostOfSups.github.io/XRP-QR-Payment-Generator
 - Enter payment amount in EUR or USD
 - Real-time conversion to XRP using CoinGecko API
 - Generates QR code with XRPL URI (`xrpl:address?amount=...`)
+- "Tip the Dev" button to send 1 XRP to the developer's address
 - Responsive design for mobile and desktop
 
 ## Setup
@@ -24,7 +25,8 @@ https://GhostOfSups.github.io/XRP-QR-Payment-Generator
 1. Enter your XRP address (starts with 'r', 25-35 characters).
 2. Input the payment amount and select EUR or USD.
 3. Click "Generate QR Code" to see the XRP equivalent and QR code.
-4. Buyers scan the QR with an XRP wallet (e.g., Xaman, Trust Wallet).
+4. Click "Tip the Dev" to show a QR code for sending 1 XRP to the developer.
+5. Buyers scan the QR with an XRP wallet (e.g., Xaman, Trust Wallet).
 
 ## License
 MIT License
