@@ -90,6 +90,7 @@ button:disabled {
         margin: 20px;
     }
     #print-qrcode {
+        display: block !important;
         margin: 20px auto;
         width: 200px;
         height: 200px;
@@ -99,6 +100,7 @@ button:disabled {
         height: 200px !important;
         display: block !important;
         margin: 0 auto;
+        visibility: visible !important; /* Ensure QR code is visible */
     }
     h2 {
         font-size: 24px;
@@ -107,5 +109,9 @@ button:disabled {
     p {
         font-size: 16px;
         margin: 5px 0;
+    }
+    /* Ensure no other elements interfere */
+    body > :not(#print-template) {
+        display: none !important;
     }
 }
