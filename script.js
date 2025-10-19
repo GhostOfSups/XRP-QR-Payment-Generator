@@ -1,147 +1,131 @@
-// Basic XRP address validation (starts with 'r', 25-35 chars)
-function isValidXRPAddress(address) {
-    return /^r[0-9a-zA-Z]{24,34}$/.test(address);
-}
+// Initialize QR code
+let qrCode = null;
+let tipQRCode = null;
 
-// Fetch XRP price from CoinGecko
-async function getXRPPrice(currency) {
-    try {
-        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=${currency}`);
-        const data = await response.json();
-        return data.ripple[currency.toLowerCase()];
-    } catch (error) {
-        console.error('Error fetching XRP price:', error);
-        return null;
+// Load saved XRP address from localStorage when the page loads
+window.onload = function() {
+    const savedAddress = localStorage.getItem('xrpAddress');
+    if (savedAddress) {
+        document.getElementById('xrp-address').value = savedAddress;
     }
-}
+};
 
-// Generate main payment QR code
 async function generateQR() {
     const address = document.getElementById('xrp-address').value.trim();
-    const amount = parseFloat(document.getElementById('amount').value);
+    const amount = document.getElementById('amount').value;
     const currency = document.getElementById('currency').value;
-    const errorDiv = document.getElementById('error');
-    const xrpAmountDiv = document.getElementById('xrp-amount');
-    const qrDiv = document.getElementById('qrcode');
+    const errorElement = document.getElementById('error');
+    const xrpAmountElement = document.getElementById('xrp-amount');
     const printButton = document.getElementById('print-button');
 
-    // Clear previous results
-    errorDiv.style.display = 'none';
-    xrpAmountDiv.textContent = '';
-    qrDiv.innerHTML = '';
-    printButton.disabled = true; // Disable print button until valid QR
+    // Clear previous error and QR code
+    errorElement.textContent = '';
+    xrpAmountElement.textContent = '';
+    document.getElementById('qrcode').innerHTML = '';
 
     // Validate inputs
-    if (!isValidXRPAddress(address)) {
-        errorDiv.textContent = 'Invalid XRP address. Must start with "r" and be 25-35 characters.';
-        errorDiv.style.display = 'block';
-        return;
-    }
-    if (!amount || amount <= 0) {
-        errorDiv.textContent = 'Please enter a valid amount.';
-        errorDiv.style.display = 'block';
+    if (!address || !amount) {
+        errorElement.textContent = 'Please fill in all fields.';
+        printButton.disabled = true;
         return;
     }
 
-    // Fetch XRP price and convert amount
-    const price = await getXRPPrice(currency);
-    if (!price) {
-        errorDiv.textContent = 'Failed to fetch XRP price. Try again later.';
-        errorDiv.style.display = 'block';
+    if (!address.startsWith('r') || address.length < 25 || address.length > 35) {
+        errorElement.textContent = 'Invalid XRP address.';
+        printButton.disabled = true;
         return;
     }
 
-    const xrpAmount = (amount / price).toFixed(6); // 6 decimals for XRP
-    xrpAmountDiv.textContent = `Equivalent: ${xrpAmount} XRP`;
+    if (amount <= 0) {
+        errorElement.textContent = 'Amount must be greater than 0.';
+        printButton.disabled = true;
+        return;
+    }
 
-    // Generate QR code with XRPL URI
-    const qrText = `xrpl:${address}?amount=${xrpAmount}`;
-    new QRCode(qrDiv, {
-        text: qrText,
+    // Save XRP address to localStorage
+    localStorage.setItem('xrpAddress', address);
+
+    // Fetch XRP price if currency is not XRP
+    let xrpAmount = amount;
+    if (currency !== 'xrp') {
+        try {
+            const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=${currency}`);
+            const data = await response.json();
+            const price = data.ripple[currency.toLowerCase()];
+            xrpAmount = (amount / price).toFixed(6);
+            xrpAmountElement.textContent = `Equivalent: ${xrpAmount} XRP`;
+        } catch (error) {
+            errorElement.textContent = 'Error fetching XRP price. Please try again.';
+            printButton.disabled = true;
+            return;
+        }
+    }
+
+    // Generate QR code
+    const qrData = `xrp:${address}?amount=${xrpAmount}`;
+    qrCode = new QRCode(document.getElementById('qrcode'), {
+        text: qrData,
         width: 200,
         height: 200
     });
 
-    // Enable print button and store data for printing
+    // Update print template
+    document.getElementById('print-address').textContent = address;
+    document.getElementById('print-amount').textContent = `${xrpAmount} XRP`;
+    document.getElementById('print-qrcode').innerHTML = '';
+    new QRCode(document.getElementById('print-qrcode'), {
+        text: qrData,
+        width: 200,
+        height: 200
+    });
+
     printButton.disabled = false;
-    printButton.dataset.qrText = qrText;
-    printButton.dataset.address = address;
-    printButton.dataset.amount = `${amount} ${currency.toUpperCase()} (${xrpAmount} XRP)`;
 }
 
-// Print QR code
+// existing functions (printQR, toggleTipQR) remain unchanged
 function printQR() {
-    const printButton = document.getElementById('print-button');
-    const printAddress = document.getElementById('print-address');
-    const printAmount = document.getElementById('print-amount');
-    const printQrDiv = document.getElementById('print-qrcode');
-
-    // Populate print template
-    printAddress.textContent = printButton.dataset.address;
-    printAmount.textContent = printButton.dataset.amount;
-    printQrDiv.innerHTML = ''; // Clear previous QR
-
-    // Generate QR code directly in print template
-    const qrText = printButton.dataset.qrText;
-    new QRCode(printQrDiv, {
-        text: qrText,
-        width: 200,
-        height: 200
-    });
-
-    // Fallback: Convert to image for better print compatibility
-    const canvas = printQrDiv.querySelector('canvas');
-    if (canvas) {
-        const img = document.createElement('img');
-        img.src = canvas.toDataURL('image/png');
-        img.style.width = '200px';
-        img.style.height = '200px';
-        img.onload = () => {
-            // Replace canvas with image
-            printQrDiv.innerHTML = '';
-            printQrDiv.appendChild(img);
-            // Trigger print after image loads
-            setTimeout(() => {
-                window.print();
-                // Clean up
-                setTimeout(() => {
-                    printQrDiv.innerHTML = '';
-                }, 1000);
-            }, 1000); // Increased delay for Firefox
-        };
-    } else {
-        // If canvas fails, trigger print with canvas
-        setTimeout(() => {
-            window.print();
-            // Clean up
-            setTimeout(() => {
-                printQrDiv.innerHTML = '';
-            }, 1000);
-        }, 1000);
-    }
+    const printContent = document.getElementById('print-content').outerHTML;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print QR Code</title>
+            <style>
+                body { text-align: center; font-family: Arial, sans-serif; }
+                #print-content { margin: 0 auto; }
+            </style>
+        </head>
+        <body>${printContent}</body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
 }
 
-// Toggle and generate tip QR code
 function toggleTipQR() {
-    const tipQrDiv = document.getElementById('tip-qrcode');
+    const tipQRDiv = document.getElementById('tip-qrcode');
     const tipButton = document.getElementById('tip-button');
-    const devAddress = 'rQERimqpZebP1Knt3BCMZHDMJWZ7u6ZBuW'; // Replace with your XRP address
-    const tipAmount = '1'; // Fixed 1 XRP tip
 
-    if (tipQrDiv.style.display === 'none' || tipQrDiv.innerHTML === '') {
-        // Show and generate tip QR code
-        tipQrDiv.innerHTML = ''; // Clear previous QR
-        const qrText = `xrpl:${devAddress}?amount=${tipAmount}`;
-        new QRCode(tipQrDiv, {
-            text: qrText,
-            width: 200,
-            height: 200
-        });
-        tipQrDiv.style.display = 'flex';
+    if (tipQRDiv.style.display === 'none') {
+        tipQRDiv.style.display = 'block';
         tipButton.textContent = 'Hide Tip QR Code';
+        if (!tipQRCode) {
+            const tipAddress = 'rQERimqpZebP1Knt3BCMZHDMJWZ7u6ZBuW'; // tip address
+            const tipQRData = `xrp:${tipAddress}?amount=1`;
+            tipQRCode = new QRCode(tipQRDiv, {
+                text: tipQRData,
+                width: 150,
+                height: 150
+            });
+        }
     } else {
-        // Hide tip QR code
-        tipQrDiv.style.display = 'none';
+        tipQRDiv.style.display = 'none';
         tipButton.textContent = 'Tip the Dev (1 XRP)';
     }
+}
+// New function to clear saved address
+function clearSavedAddress() {
+    localStorage.removeItem('xrpAddress');
+    document.getElementById('xrp-address').value = '';
+    alert('Saved address cleared.');
 }

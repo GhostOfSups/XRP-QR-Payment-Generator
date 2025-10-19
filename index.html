@@ -26,6 +26,7 @@
         <p id="xrp-amount"></p>
         <div id="qrcode"></div>
         <button onclick="printQR()" id="print-button" disabled>Print QR Code</button>
+        <button onclick="clearSavedAddress()">Clear Saved Address</button>
         <button onclick="toggleTipQR()" id="tip-button">Tip the Dev (1 XRP)</button>
         <div id="tip-qrcode" style="display: none;"></div>
         <p id="error" class="error"></p>
@@ -39,7 +40,7 @@
         <div id="print-qrcode"></div>
     </div>
 </div>
-    <style>
+<style>
 /* Hide by default on screen */
 #print-template {
     display: none;
