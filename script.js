@@ -23,11 +23,13 @@ async function generateQR() {
     const errorDiv = document.getElementById('error');
     const xrpAmountDiv = document.getElementById('xrp-amount');
     const qrDiv = document.getElementById('qrcode');
+    const printButton = document.getElementById('print-button');
 
     // Clear previous results
     errorDiv.style.display = 'none';
     xrpAmountDiv.textContent = '';
     qrDiv.innerHTML = '';
+    printButton.disabled = true; // Disable print button until valid QR
 
     // Validate inputs
     if (!isValidXRPAddress(address)) {
@@ -59,6 +61,51 @@ async function generateQR() {
         width: 200,
         height: 200
     });
+
+    // Enable print button and store data for printing
+    printButton.disabled = false;
+    printButton.dataset.qrText = qrText;
+    printButton.dataset.address = address;
+    printButton.dataset.amount = `${amount} ${currency.toUpperCase()} (${xrpAmount} XRP)`;
+}
+
+// Print QR code
+function printQR() {
+    const printButton = document.getElementById('print-button');
+    const printAddress = document.getElementById('print-address');
+    const printAmount = document.getElementById('print-amount');
+    const printQrDiv = document.getElementById('print-qrcode');
+
+    // Populate print template
+    printAddress.textContent = printButton.dataset.address;
+    printAmount.textContent = printButton.dataset.amount;
+    printQrDiv.innerHTML = ''; // Clear previous QR
+
+    // Generate QR code as an image for print compatibility
+    const qrText = printButton.dataset.qrText;
+    const tempCanvas = document.createElement('canvas');
+    new QRCode(tempCanvas, {
+        text: qrText,
+        width: 200,
+        height: 200
+    });
+
+    // Convert canvas to image
+    setTimeout(() => {
+        const img = document.createElement('img');
+        img.src = tempCanvas.toDataURL('image/png');
+        img.style.width = '200px';
+        img.style.height = '200px';
+        printQrDiv.appendChild(img);
+
+        // Trigger print
+        window.print();
+
+        // Clean up (optional, since print dialog is modal)
+        setTimeout(() => {
+            printQrDiv.innerHTML = '';
+        }, 1000);
+    }, 500); // Delay to ensure QR code renders
 }
 
 // Toggle and generate tip QR code

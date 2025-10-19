@@ -40,13 +40,17 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
 #tip-button {
     background-color: #28a745;
 }
 #tip-button:hover {
     background-color: #218838;
 }
-#qrcode, #tip-qrcode {
+#qrcode, #tip-qrcode, #print-qrcode {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -54,10 +58,50 @@ button:hover {
     width: 200px;
     height: 200px;
 }
-#qrcode canvas, #tip-qrcode canvas {
+#qrcode canvas, #tip-qrcode canvas, #print-qrcode canvas, #print-qrcode img {
     margin: 0 auto;
 }
 .error {
     color: red;
     display: none;
+}
+
+/* Print-specific styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #print-template, #print-template * {
+        visibility: visible;
+    }
+    #print-template {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+    }
+    #print-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 20px;
+    }
+    #print-qrcode {
+        margin: 20px auto;
+    }
+    #print-qrcode canvas, #print-qrcode img {
+        width: 200px !important;
+        height: 200px !important;
+        display: block;
+    }
+    h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    p {
+        font-size: 16px;
+        margin: 5px 0;
+    }
 }
