@@ -81,31 +81,44 @@ function printQR() {
     printAmount.textContent = printButton.dataset.amount;
     printQrDiv.innerHTML = ''; // Clear previous QR
 
-    // Generate QR code as an image for print compatibility
+    // Generate QR code directly in print template
     const qrText = printButton.dataset.qrText;
-    const tempCanvas = document.createElement('canvas');
-    new QRCode(tempCanvas, {
+    new QRCode(printQrDiv, {
         text: qrText,
         width: 200,
         height: 200
     });
 
-    // Convert canvas to image
-    setTimeout(() => {
+    // Fallback: Convert to image for better print compatibility
+    const canvas = printQrDiv.querySelector('canvas');
+    if (canvas) {
         const img = document.createElement('img');
-        img.src = tempCanvas.toDataURL('image/png');
+        img.src = canvas.toDataURL('image/png');
         img.style.width = '200px';
         img.style.height = '200px';
-        printQrDiv.appendChild(img);
-
-        // Trigger print
-        window.print();
-
-        // Clean up (optional, since print dialog is modal)
-        setTimeout(() => {
+        img.onload = () => {
+            // Replace canvas with image
             printQrDiv.innerHTML = '';
+            printQrDiv.appendChild(img);
+            // Trigger print after image loads
+            setTimeout(() => {
+                window.print();
+                // Clean up
+                setTimeout(() => {
+                    printQrDiv.innerHTML = '';
+                }, 1000);
+            }, 1000); // Increased delay for Firefox
+        };
+    } else {
+        // If canvas fails, trigger print with canvas
+        setTimeout(() => {
+            window.print();
+            // Clean up
+            setTimeout(() => {
+                printQrDiv.innerHTML = '';
+            }, 1000);
         }, 1000);
-    }, 500); // Delay to ensure QR code renders
+    }
 }
 
 // Toggle and generate tip QR code
