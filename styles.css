@@ -35,20 +35,29 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin: 10px 0;
 }
 button:hover {
     background-color: #0056b3;
 }
-#qrcode {
+#tip-button {
+    background-color: #28a745;
+}
+#tip-button:hover {
+    background-color: #218838;
+}
+#qrcode, #tip-qrcode {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 20px auto;
-    width: 200px; /* Match QR code width */
-    height: 200px; /* Match QR code height */
+    width: 200px;
+    height: 200px;
 }
-#qrcode canvas {
-    margin: 0 auto; /* Ensure the canvas inside is centered */
+#qrcode canvas, #tip-qrcode canvas {
+    margin: 0 auto;
 }
 .error {
-    color: red
+    color: red;
+    display: none;
+}
