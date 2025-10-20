@@ -2,7 +2,7 @@
 
 A simple web app to generate QR codes for XRP payments. Sellers input their XRP address and a payment amount in EUR or USD, and the app converts it to XRP and creates a scannable QR code.
 
-Try it here:
+Go to the site here and add to homescreen on mobile:
 https://GhostOfSups.github.io/XRP-QR-Payment-Generator
 
 ## Features
@@ -12,7 +12,7 @@ https://GhostOfSups.github.io/XRP-QR-Payment-Generator
 - Generates QR code with XRPL URI (`xrpl:address?amount=...`)
 - "Print QR Code" button to create a print-friendly page with QR code, address, and amount
 - "Tip the Dev" button to send 1 XRP to the developer's address
-- Responsive design for mobile and desktop
+- Responsive design for mobile and desktop - Now enebled "Add to homescreen" for mobile
 
 ## Setup
 1. Clone the repository: `git clone https://github.com/<your-username>/XRP-QR-Payment-Generator.git`
