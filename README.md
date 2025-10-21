@@ -1,6 +1,6 @@
 # XRP QR Payment Generator
 
-A simple web app to generate QR codes for XRP payments. Sellers input their XRP address and a payment amount in EUR or USD, and the app converts it to XRP and creates a scannable QR code.
+A simple web app to generate QR codes for XRP or RLUSD payments. Sellers input their XRP address and a payment amount in EUR or USD, and the app converts it to XRP or RLUSD and creates a scannable QR code.
 
 Go to the site here and add to homescreen on mobile:
 https://GhostOfSups.github.io/XRP-QR-Payment-Generator
@@ -8,7 +8,7 @@ https://GhostOfSups.github.io/XRP-QR-Payment-Generator
 ## Features
 - Input XRP address and validate format
 - Enter payment amount in EUR or USD
-- Real-time conversion to XRP using CoinGecko API
+- Real-time conversion to XRP/RLUSD using CoinGecko API
 - Generates QR code with XRPL URI (`xrpl:address?amount=...`)
 - "Print QR Code" button to create a print-friendly page with QR code, address, and amount
 - "Tip the Dev" button to send 1 XRP to the developer's address
@@ -26,10 +26,10 @@ https://GhostOfSups.github.io/XRP-QR-Payment-Generator
 ## Usage
 1. Enter your XRP address (starts with 'r', 25-35 characters).
 2. Input the payment amount and select EUR or USD.
-3. Click "Generate QR Code" to see the XRP equivalent and QR code.
+3. Click "Generate QR Code" to see the XRP/RLUSD equivalent and QR code.
 4. Click "Print QR Code" to print a page with the QR code, address, and amount for product labels or receipts.
 5. Click "Tip the Dev" to show a QR code for sending 1 XRP to the developer.
-6. Buyers scan the QR with an XRP wallet (e.g., Xaman, Trust Wallet).
+6. Buyers scan the QR with any QR reader (Re-directs through Xaman if installed) or an XRP wallet (e.g., Xaman, Trust Wallet).
 
 ## License
 MIT License
