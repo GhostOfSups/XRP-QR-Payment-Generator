@@ -1,4 +1,4 @@
-# XRP QR Payment Generator
+# XRP/RLUSD QR Payment Generator
 
 A simple web app to generate QR codes for XRP or RLUSD payments. Sellers input their XRP address and a payment amount in EUR or USD, and the app converts it to XRP or RLUSD and creates a scannable QR code.
 
