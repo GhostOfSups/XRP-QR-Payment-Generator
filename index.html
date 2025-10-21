@@ -3,26 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XRP QR Payment Generator</title>
+    <title>XRP & RLUSD QR Payment Generator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="./manifest.json">
 </head>
 <body>
     <div class="container">
-        <h1>XRP QR Payment Generator</h1>
+        <h1>XRP & RLUSD QR Payment Generator</h1>
         <img src="xrplogo.png" alt="XRP Logo" style="height: 50px; margin: 0 auto 1rem auto;">
+        
         <div class="input-group">
-            <label for="xrp-address">Your XRP Address:</label>
+            <label for="xrp-address">Your XRPL Address:</label>
             <input type="text" id="xrp-address" placeholder="e.g., r123...xyz" required>
         </div>
+        
         <div class="input-group">
             <label for="amount">Payment Amount:</label>
             <input type="number" id="amount" step="0.01" min="0" placeholder="Enter amount" required>
-            <select id="currency">
+            <select id="fiat-currency">
                 <option value="usd">USD</option>
                 <option value="eur">EUR</option>
             </select>
         </div>
+        
+        <div class="input-group">
+            <label for="crypto-currency">Send:</label>
+            <select id="crypto-currency" onchange="updateConversion()">
+                <option value="XRP">XRP</option>
+                <option value="RLUSD">RLUSD</option>
+            </select>
+        </div>
+        
         <button onclick="generateQR()">Generate QR Code</button>
         <p id="xrp-amount"></p>
         <div id="qrcode"></div>
@@ -32,28 +43,31 @@
         <div id="tip-qrcode" style="display: none;"></div>
         <p id="error" class="error"></p>
     </div>
+    
     <!-- Hidden print template -->
-<div id="print-template">
-    <div id="print-content">
-        <h2>Payment Details</h2>
-        <p><strong>Address:</strong> <span id="print-address"></span></p>
-        <p><strong>Amount:</strong> <span id="print-amount"></span></p>
-        <div id="print-qrcode"></div>
+    <div id="print-template">
+        <div id="print-content">
+            <h2>Payment Details</h2>
+            <p><strong>Address:</strong> <span id="print-address"></span></p>
+            <p><strong>Amount:</strong> <span id="print-amount"></span></p>
+            <div id="print-qrcode"></div>
+        </div>
     </div>
-</div>
-<style>
-/* Hide by default on screen */
-#print-template {
-    display: none;
-}
+    
+    <style>
+        /* Hide by default on screen */
+        #print-template {
+            display: none;
+        }
 
-/* Show only when printing */
-@media print {
-    #print-template {
-        display: block;
-    }
-}
-</style>
+        /* Show only when printing */
+        @media print {
+            #print-template {
+                display: block;
+            }
+        }
+    </style>
+    
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 </body>
